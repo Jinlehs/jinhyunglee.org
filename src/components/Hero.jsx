@@ -5,11 +5,7 @@ export default function Hero() {
     <section className="hero">
       <div className="container hero-inner">
         <p className="eyebrow">{site.tagline}</p>
-        <h1>
-          Building thoughtful software
-          <br />
-          with clear impact.
-        </h1>
+        <h1>Reliable software. Clear impact.</h1>
         <p className="hero-lead">{site.intro}</p>
         <div className="hero-actions">
           <a className="btn btn-primary" href="#projects">
