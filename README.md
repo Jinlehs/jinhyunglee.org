@@ -35,32 +35,44 @@ Additional pages (e.g. a dedicated resume PDF, case studies, or a blog) can be a
 
 ## Tech Stack
 
-*To be decided.* Likely options:
-
-- **Static site** — HTML/CSS/JS, or a generator like Astro, Next.js, or Eleventy
+- **Frontend** — React with [Vite](https://vite.dev/)
 - **Hosting** — GitHub Pages, Vercel, Netlify, or similar
 - **Domain** — `jinhyunglee.org` pointed at the deployed site
 
-The stack will prioritize simplicity, performance, and low maintenance so the focus stays on the work itself.
+The stack prioritizes simplicity, performance, and low maintenance so the focus stays on the work itself.
 
 ---
 
 ## Local Development
 
-Once the project is scaffolded:
-
 ```bash
 git clone https://github.com/Jinlehs/jinhyunglee.org.git
 cd jinhyunglee.org
-
-# Install dependencies (exact command depends on chosen stack)
-# npm install
-
-# Start dev server
-# npm run dev
+npm install
+npm run dev
 ```
 
-Update this section with the actual commands after the initial setup.
+Open the URL shown in the terminal (usually `http://localhost:5173`).
+
+### Project structure
+
+```
+src/
+  components/     # UI sections (Header, Hero, Projects, etc.)
+  data/           # Portfolio content (edit portfolio.js to update copy)
+  App.jsx         # Page layout
+  main.jsx        # React entry point
+  index.css       # Global styles
+```
+
+### Build for production
+
+```bash
+npm run build
+npm run preview
+```
+
+Production output is written to `dist/`.
 
 ---
 
@@ -72,9 +84,9 @@ The site will deploy automatically from the `main` branch (e.g. via GitHub Pages
 
 ## Roadmap
 
-- [ ] Choose tech stack and scaffold the project
-- [ ] Design layout and content structure
-- [ ] Build core pages (Home, About, Projects, Experience, Contact)
+- [x] Choose tech stack and scaffold the project
+- [x] Design layout and content structure
+- [x] Build core pages (Home, About, Projects, Experience, Contact)
 - [ ] Add project content and assets
 - [ ] Configure domain and deploy to production
 - [ ] Optimize for SEO, accessibility, and performance
