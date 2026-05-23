@@ -1,0 +1,5 @@
+name = "jinhyunglee-org"
+compatibility_date = "2025-05-22"
+
+# Serve the Vite build output as static assets
+assets = { directory = "./dist" }
