@@ -28,8 +28,7 @@ export default function Contact() {
           <p className="eyebrow">Contact</p>
           <h2>Let's connect</h2>
           <p className="section-lead">
-            Open to new opportunities and interesting collaborations. Reach out
-            by email or connect on the links below.
+            Open to opportunities and collaborations. Reach out below.
           </p>
         </div>
         <ul className="contact-links">
