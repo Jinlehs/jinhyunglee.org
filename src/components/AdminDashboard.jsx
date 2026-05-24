@@ -3,10 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 function slugify(title) {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
 const EMPTY_FORM = { title: "", slug: "", excerpt: "", content: "" };
@@ -14,47 +11,87 @@ const EMPTY_FORM = { title: "", slug: "", excerpt: "", content: "" };
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [form, setForm] = useState(EMPTY_FORM);
+  const [editingId, setEditingId] = useState(null);
   const [posts, setPosts] = useState([]);
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [token, setToken] = useState(null);
-
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) { navigate("/admin/login"); return; }
-      setToken(session.access_token);
-      fetch("/api/posts").then((r) => r.json()).then(setPosts);
+      loadPosts();
     });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) navigate("/admin/login");
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
+
+  async function loadPosts() {
+    const { data } = await supabase
+      .from("posts")
+      .select("id, slug, title, excerpt, content, created_at")
+      .order("created_at", { ascending: false });
+    setPosts(data || []);
+  }
 
   function handleChange(e) {
     const { name, value } = e.target;
     setForm((f) => ({
       ...f,
       [name]: value,
-      ...(name === "title" ? { slug: slugify(value) } : {}),
+      ...(name === "title" && !editingId ? { slug: slugify(value) } : {}),
     }));
+  }
+
+  function startEdit(post) {
+    setEditingId(post.id);
+    setForm({ title: post.title, slug: post.slug, excerpt: post.excerpt || "", content: post.content });
+    setStatus(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setForm(EMPTY_FORM);
+    setStatus(null);
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     setStatus(null);
-    const res = await fetch("/api/posts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ ...form, date: new Date().toISOString().split("T")[0] }),
-    });
-    if (res.ok) {
-      setStatus({ ok: true, msg: "Post published." });
-      setForm(EMPTY_FORM);
-      fetch("/api/posts").then((r) => r.json()).then(setPosts);
+
+    const { error } = editingId
+      ? await supabase.from("posts").update({
+          title: form.title,
+          slug: form.slug,
+          excerpt: form.excerpt,
+          content: form.content,
+        }).eq("id", editingId)
+      : await supabase.from("posts").insert(form);
+
+    if (error) {
+      setStatus({ ok: false, msg: error.message });
     } else {
-      const { error } = await res.json();
-      setStatus({ ok: false, msg: error || "Something went wrong." });
+      setStatus({ ok: true, msg: editingId ? "Post updated." : "Post published." });
+      setEditingId(null);
+      setForm(EMPTY_FORM);
+      loadPosts();
     }
     setLoading(false);
+  }
+
+  async function handleDelete(post) {
+    if (!confirm(`Delete "${post.title}"? This cannot be undone.`)) return;
+    const { error } = await supabase.from("posts").delete().eq("id", post.id);
+    if (error) {
+      setStatus({ ok: false, msg: error.message });
+    } else {
+      loadPosts();
+    }
   }
 
   async function handleLogout() {
@@ -68,11 +105,9 @@ export default function AdminDashboard() {
         <div className="admin-header">
           <div className="section-heading" style={{ marginBottom: 0 }}>
             <p className="eyebrow">Admin</p>
-            <h2>New post</h2>
+            <h2>{editingId ? "Edit post" : "New post"}</h2>
           </div>
-          <button className="btn btn-secondary" onClick={handleLogout}>
-            Log out
-          </button>
+          <button className="btn btn-secondary" onClick={handleLogout}>Log out</button>
         </div>
 
         <form className="admin-form" onSubmit={handleSubmit}>
@@ -95,9 +130,16 @@ export default function AdminDashboard() {
           {status && (
             <p className={status.ok ? "form-success" : "form-error"}>{status.msg}</p>
           )}
-          <button className="btn btn-primary" type="submit" disabled={loading}>
-            {loading ? "Publishing…" : "Publish post"}
-          </button>
+          <div className="form-actions">
+            <button className="btn btn-primary" type="submit" disabled={loading}>
+              {loading ? "Saving…" : editingId ? "Save changes" : "Publish post"}
+            </button>
+            {editingId && (
+              <button type="button" className="btn btn-secondary" onClick={cancelEdit}>
+                Cancel
+              </button>
+            )}
+          </div>
         </form>
 
         {posts.length > 0 && (
@@ -105,9 +147,12 @@ export default function AdminDashboard() {
             <h3>Published posts</h3>
             <ul>
               {posts.map((p) => (
-                <li key={p.slug}>
+                <li key={p.id}>
                   <Link to={`/blog/${p.slug}`}>{p.title}</Link>
-                  <time dateTime={p.date}>{p.date}</time>
+                  <div className="admin-post-actions">
+                    <button className="post-action-btn" onClick={() => startEdit(p)}>Edit</button>
+                    <button className="post-action-btn post-action-delete" onClick={() => handleDelete(p)}>Delete</button>
+                  </div>
                 </li>
               ))}
             </ul>

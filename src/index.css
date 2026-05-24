@@ -753,6 +753,7 @@ h3 {
 .admin-posts li {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
   font-size: 0.9375rem;
 }
@@ -760,4 +761,37 @@ h3 {
 .admin-posts time {
   color: var(--text-muted);
   white-space: nowrap;
+}
+
+.admin-post-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.post-action-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.8125rem;
+  font-family: var(--font-sans);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.post-action-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.post-action-delete:hover {
+  border-color: #b91c1c;
+  color: #b91c1c;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
 }
