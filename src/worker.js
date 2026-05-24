@@ -1,3 +1,7 @@
+import { createClient } from "@supabase/supabase-js";
+
+const SUPABASE_URL = "https://tvozqyobpuclbugkbqju.supabase.co";
+
 const SEED_POSTS = [
   {
     id: "1",
@@ -81,7 +85,11 @@ async function getPosts(env) {
 async function requireAuth(request, env) {
   const token = request.headers.get("Authorization")?.slice(7);
   if (!token) return false;
-  return !!(await env.BLOG_KV.get(`session:${token}`));
+  const supabase = createClient(SUPABASE_URL, env.SUPABASE_SERVICE_KEY, {
+    auth: { persistSession: false },
+  });
+  const { data: { user } } = await supabase.auth.getUser(token);
+  return !!user;
 }
 
 async function handleAPI(request, env, pathname) {
@@ -103,21 +111,6 @@ async function handleAPI(request, env, pathname) {
     const posts = await getPosts(env);
     const post = posts.find((p) => p.slug === postMatch[1] && p.published);
     return post ? json(post) : json({ error: "Not found" }, 404);
-  }
-
-  // Login
-  if (pathname === "/api/auth/login" && method === "POST") {
-    const { password } = await request.json();
-    if (password !== env.ADMIN_PASSWORD) return json({ error: "Invalid password" }, 401);
-    const token = crypto.randomUUID();
-    await env.BLOG_KV.put(`session:${token}`, "1", { expirationTtl: 86400 });
-    return json({ token });
-  }
-
-  // Verify session
-  if (pathname === "/api/auth/verify" && method === "GET") {
-    const authed = await requireAuth(request, env);
-    return authed ? json({ ok: true }) : json({ error: "Unauthorized" }, 401);
   }
 
   // Create post (protected)

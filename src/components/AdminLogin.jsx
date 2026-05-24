@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 
 export default function AdminLogin() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -11,17 +13,11 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-    if (res.ok) {
-      const { token } = await res.json();
-      localStorage.setItem("admin_token", token);
-      navigate("/admin");
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setError(error.message);
     } else {
-      setError("Invalid password.");
+      navigate("/admin");
     }
     setLoading(false);
   }
@@ -35,13 +31,22 @@ export default function AdminLogin() {
         </div>
         <form className="admin-form" onSubmit={handleSubmit}>
           <label className="field-label">
+            Email
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoFocus
+            />
+          </label>
+          <label className="field-label">
             Password
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              autoFocus
             />
           </label>
           {error && <p className="form-error">{error}</p>}

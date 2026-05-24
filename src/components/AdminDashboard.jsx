@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 
 function slugify(title) {
   return title
@@ -17,13 +18,14 @@ export default function AdminDashboard() {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const token = localStorage.getItem("admin_token");
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    if (!token) { navigate("/admin/login"); return; }
-    fetch("/api/auth/verify", { headers: { Authorization: `Bearer ${token}` } })
-      .then((r) => { if (!r.ok) { localStorage.removeItem("admin_token"); navigate("/admin/login"); } });
-    fetch("/api/posts").then((r) => r.json()).then(setPosts);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) { navigate("/admin/login"); return; }
+      setToken(session.access_token);
+      fetch("/api/posts").then((r) => r.json()).then(setPosts);
+    });
   }, []);
 
   function handleChange(e) {
@@ -55,8 +57,8 @@ export default function AdminDashboard() {
     setLoading(false);
   }
 
-  function handleLogout() {
-    localStorage.removeItem("admin_token");
+  async function handleLogout() {
+    await supabase.auth.signOut();
     navigate("/admin/login");
   }
 
