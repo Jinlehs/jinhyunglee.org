@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { site } from "../data/portfolio";
 
 export default function Footer() {
@@ -7,7 +8,10 @@ export default function Footer() {
         <p>
           &copy; {new Date().getFullYear()} {site.name}
         </p>
-        <a href="#main">Back to top</a>
+        <div className="footer-links">
+          <a href="#main">Back to top</a>
+          <Link to="/admin/login" className="admin-link">Admin</Link>
+        </div>
       </div>
     </footer>
   );

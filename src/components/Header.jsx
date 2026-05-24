@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { navLinks, site } from "../data/portfolio";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+  const isHome = pathname === "/";
 
   function closeMenu() {
     setMenuOpen(false);
@@ -37,7 +39,7 @@ export default function Header() {
                 {link.label}
               </Link>
             ) : (
-              <a key={link.href} href={link.href} onClick={closeMenu}>
+              <a key={link.href} href={isHome ? link.href : `/${link.href}`} onClick={closeMenu}>
                 {link.label}
               </a>
             )
