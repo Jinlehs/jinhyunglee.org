@@ -10,8 +10,11 @@
     "deploy": "vite build && npx wrangler deploy"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.106.1",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.15.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.5.2",
