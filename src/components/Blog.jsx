@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 
 export default function Blog() {
   const [posts, setPosts] = useState([]);
@@ -7,10 +8,13 @@ export default function Blog() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/posts")
-      .then((r) => r.json())
-      .then((data) => {
-        setPosts(data);
+    supabase
+      .from("posts")
+      .select("id, slug, title, excerpt, created_at")
+      .eq("published", true)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        setPosts(data || []);
         setLoading(false);
       });
   }, []);
@@ -41,9 +45,9 @@ export default function Blog() {
         ) : (
           <ol className="blog-list">
             {filtered.map((post) => (
-              <li key={post.slug} className="blog-card">
-                <time className="blog-date" dateTime={post.date}>
-                  {new Date(post.date + "T00:00:00").toLocaleDateString("en-CA", {
+              <li key={post.id} className="blog-card">
+                <time className="blog-date" dateTime={post.created_at}>
+                  {new Date(post.created_at).toLocaleDateString("en-CA", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",

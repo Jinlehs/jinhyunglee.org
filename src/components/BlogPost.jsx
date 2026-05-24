@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import { supabase } from "../lib/supabase";
 
 export default function BlogPost() {
   const { slug } = useParams();
@@ -8,12 +9,16 @@ export default function BlogPost() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/posts/${slug}`)
-      .then((r) => {
-        if (!r.ok) { setNotFound(true); return null; }
-        return r.json();
-      })
-      .then((data) => { if (data) setPost(data); });
+    supabase
+      .from("posts")
+      .select("*")
+      .eq("slug", slug)
+      .eq("published", true)
+      .single()
+      .then(({ data, error }) => {
+        if (error || !data) setNotFound(true);
+        else setPost(data);
+      });
   }, [slug]);
 
   if (notFound) {
@@ -39,8 +44,8 @@ export default function BlogPost() {
       <div className="container blog-post-page">
         <Link to="/blog" className="back-link">← Back to blog</Link>
         <header className="blog-post-header">
-          <time className="blog-date" dateTime={post.date}>
-            {new Date(post.date + "T00:00:00").toLocaleDateString("en-CA", {
+          <time className="blog-date" dateTime={post.created_at}>
+            {new Date(post.created_at).toLocaleDateString("en-CA", {
               year: "numeric",
               month: "long",
               day: "numeric",
