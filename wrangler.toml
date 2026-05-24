@@ -9,6 +9,10 @@ command = "npm run build"
 directory = "./dist"
 binding = "ASSETS"
 
+[[kv_namespaces]]
+binding = "BLOG_KV"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+
 [[routes]]
 pattern = "resume.jinhyunglee.org/*"
 zone_name = "jinhyunglee.org"

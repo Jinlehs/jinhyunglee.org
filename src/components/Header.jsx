@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { navLinks, site } from "../data/portfolio";
 
 export default function Header() {
@@ -11,9 +12,9 @@ export default function Header() {
   return (
     <header className="site-header">
       <div className="container header-inner">
-        <a className="logo" href="#" onClick={closeMenu}>
+        <Link className="logo" to="/" onClick={closeMenu}>
           {site.name}
-        </a>
+        </Link>
         <button
           className="nav-toggle"
           type="button"
@@ -30,11 +31,17 @@ export default function Header() {
           className={`site-nav${menuOpen ? " is-open" : ""}`}
           aria-label="Primary"
         >
-          {navLinks.map((link) => (
-            <a key={link.href} href={link.href} onClick={closeMenu}>
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) =>
+            link.href.startsWith("/") ? (
+              <Link key={link.href} to={link.href} onClick={closeMenu}>
+                {link.label}
+              </Link>
+            ) : (
+              <a key={link.href} href={link.href} onClick={closeMenu}>
+                {link.label}
+              </a>
+            )
+          )}
         </nav>
       </div>
     </header>
