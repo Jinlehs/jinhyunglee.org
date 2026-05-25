@@ -17,12 +17,12 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { navigate("/admin/login"); return; }
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) { navigate("/admin/login"); return; }
       loadPosts();
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) navigate("/admin/login");
     });
 
@@ -107,7 +107,12 @@ export default function AdminDashboard() {
             <p className="eyebrow">Admin</p>
             <h2>{editingId ? "Edit post" : "New post"}</h2>
           </div>
-          <button className="btn btn-secondary" onClick={handleLogout}>Log out</button>
+          <div className="admin-header-actions">
+            {editingId && (
+              <button className="btn btn-secondary" onClick={cancelEdit}>New post</button>
+            )}
+            <button className="btn btn-secondary" onClick={handleLogout}>Log out</button>
+          </div>
         </div>
 
         <form className="admin-form" onSubmit={handleSubmit}>
