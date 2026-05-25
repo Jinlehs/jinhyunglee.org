@@ -10,7 +10,7 @@ export default function Footer() {
         </p>
         <div className="footer-links">
           <a href="#main">Back to top</a>
-          <Link to="/admin/login" className="admin-link">Admin</Link>
+          <Link to="/admin" className="admin-link">Admin</Link>
         </div>
       </div>
     </footer>
