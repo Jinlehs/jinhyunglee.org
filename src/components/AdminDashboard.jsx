@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import AdminNav from "./AdminNav";
 
 function slugify(title) {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -102,6 +103,7 @@ export default function AdminDashboard() {
   return (
     <section className="section">
       <div className="container admin-form-wrap">
+        <AdminNav />
         <div className="admin-header">
           <div className="section-heading" style={{ marginBottom: 0 }}>
             <p className="eyebrow">Admin</p>
