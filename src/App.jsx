@@ -10,6 +10,7 @@ import Blog from "./components/Blog";
 import BlogPost from "./components/BlogPost";
 import AdminLogin from "./components/AdminLogin";
 import AdminDashboard from "./components/AdminDashboard";
+import AdminStocks from "./components/AdminStocks";
 
 function HomePage() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/stocks" element={<AdminStocks />} />
         </Routes>
       </main>
       <Footer />
