@@ -45,10 +45,15 @@ async function handleAPI(request, env, pathname) {
   return json({ error: "Not found" }, 404);
 }
 
+function isWordPressPath(pathname) {
+  return pathname.startsWith("/wp-") || pathname === "/xmlrpc.php";
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.hostname === "jinhyunglee.org") {
+      if (isWordPressPath(url.pathname)) return fetch(request);
       url.hostname = "resume.jinhyunglee.org";
       return Response.redirect(url.toString(), 301);
     }
