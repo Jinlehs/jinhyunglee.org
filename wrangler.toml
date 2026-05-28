@@ -10,5 +10,9 @@ directory = "./dist"
 binding = "ASSETS"
 
 [[routes]]
+pattern = "jinhyunglee.org/*"
+zone_name = "jinhyunglee.org"
+
+[[routes]]
 pattern = "resume.jinhyunglee.org/*"
 zone_name = "jinhyunglee.org"
