@@ -47,7 +47,12 @@ async function handleAPI(request, env, pathname) {
 
 export default {
   async fetch(request, env) {
-    const { pathname } = new URL(request.url);
+    const url = new URL(request.url);
+    if (url.hostname === "jinhyunglee.org") {
+      url.hostname = "resume.jinhyunglee.org";
+      return Response.redirect(url.toString(), 301);
+    }
+    const { pathname } = url;
     if (pathname.startsWith("/api/")) return handleAPI(request, env, pathname);
     const response = await env.ASSETS.fetch(request);
     if (response.status === 404) {
