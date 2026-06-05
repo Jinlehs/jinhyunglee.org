@@ -3,6 +3,34 @@
    Inherits from root CSS variables defined in index.css
    ============================================================ */
 
+/* ── Admin Layout ────────────────────────────────────────────── */
+
+.admin-page {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.admin-content {
+  width: min(calc(100% - 3rem), 1200px);
+  margin-inline: auto;
+  padding: 2.5rem 0 5rem;
+}
+
+.admin-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 400;
+  color: var(--text);
+  margin: 0 0 0.25rem;
+  line-height: 1.2;
+}
+
+.admin-sub {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
 /* ── Layout ─────────────────────────────────────────────────── */
 
 .facilities-page {
@@ -191,10 +219,10 @@
 
 .fac-admin-form-wrap {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.75rem;
-  max-width: 760px;
+  padding: 2rem 2.25rem;
+  max-width: 820px;
 }
 
 /* ── Badges & Status ─────────────────────────────────────────── */
@@ -938,41 +966,43 @@
 
 /* ── Admin: Facilities Hub ───────────────────────────────────── */
 
-.admin-header {
+.admin-page .admin-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1.5px solid var(--border);
 }
 .admin-header-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
 
 .fac-hub-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 .fac-stat-card {
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.25rem 1rem;
+  padding: 1.5rem 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.3rem;
 }
-.fac-stat-card-link { text-decoration: none; transition: border-color 0.15s; }
-.fac-stat-card-link:hover .fac-stat-card { border-color: var(--accent); }
-.fac-stat-card-val { font-size: 1.75rem; font-weight: 700; color: var(--accent); }
-.fac-stat-card-label { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
-.fac-stat-card-sub { font-size: 0.72rem; color: var(--text-muted); }
+.fac-stat-card-link { text-decoration: none; transition: border-color 0.15s, box-shadow 0.15s; }
+.fac-stat-card-link:hover .fac-stat-card { border-color: var(--accent); box-shadow: var(--shadow); }
+.fac-stat-card-val { font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1; }
+.fac-stat-card-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-top: 0.1rem; }
+.fac-stat-card-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem; }
 
 .fac-hub-grid {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 2rem;
+  grid-template-columns: 320px 1fr;
+  gap: 2.5rem;
   align-items: start;
 }
 .fac-hub-section { display: flex; flex-direction: column; gap: 0.75rem; }
@@ -980,26 +1010,28 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 0.25rem;
 }
-.fac-hub-section-title { font-size: 1rem; font-weight: 700; margin: 0; }
+.fac-hub-section-title { font-size: 1.05rem; font-weight: 700; margin: 0; }
 
-.fac-hub-links { display: flex; flex-direction: column; gap: 0.4rem; }
+.fac-hub-links { display: flex; flex-direction: column; gap: 0.5rem; }
 .fac-hub-link {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.85rem 1rem;
+  gap: 0.5rem 0.75rem;
+  padding: 1rem 1.1rem;
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: 10px;
   text-decoration: none;
   color: var(--text);
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background 0.15s;
 }
-.fac-hub-link:hover { border-color: var(--accent); color: var(--text); }
-.fac-hub-link-label { font-weight: 600; font-size: 0.88rem; flex: 1; }
-.fac-hub-link-desc { font-size: 0.75rem; color: var(--text-muted); flex: 2; }
-.fac-hub-link-arrow { color: var(--text-muted); font-size: 0.85rem; }
+.fac-hub-link:hover { border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
+.fac-hub-link-label { font-weight: 700; font-size: 0.9rem; grid-column: 1; grid-row: 1; }
+.fac-hub-link-desc { font-size: 0.76rem; color: var(--text-muted); grid-column: 1; grid-row: 2; }
+.fac-hub-link-arrow { color: var(--accent); font-size: 1rem; grid-column: 2; grid-row: 1 / 3; }
 
 .fac-recent-list { display: flex; flex-direction: column; gap: 0.5rem; }
 .fac-recent-item {
@@ -1007,24 +1039,29 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  padding: 0.75rem 1rem;
+  padding: 0.9rem 1.1rem;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
   text-decoration: none;
   color: var(--text);
-  transition: border-color 0.12s;
+  transition: border-color 0.12s, background 0.12s;
 }
-.fac-recent-item:hover { border-color: var(--accent); color: var(--text); }
-.fac-recent-main { display: flex; flex-direction: column; gap: 0.15rem; }
-.fac-recent-title { font-weight: 600; font-size: 0.88rem; }
-.fac-recent-facility { font-size: 0.75rem; color: var(--text-muted); }
-.fac-recent-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; }
+.fac-recent-item:hover { border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
+.fac-recent-main { display: flex; flex-direction: column; gap: 0.2rem; }
+.fac-recent-title { font-weight: 600; font-size: 0.9rem; }
+.fac-recent-facility { font-size: 0.76rem; color: var(--text-muted); }
+.fac-recent-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; flex-shrink: 0; }
 .fac-recent-date { font-size: 0.75rem; color: var(--text-muted); }
 
 /* ── Admin: Table ────────────────────────────────────────────── */
 
-.fac-admin-table-wrap { overflow-x: auto; }
+.fac-admin-table-wrap {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+}
 .fac-admin-table {
   width: 100%;
   border-collapse: collapse;
@@ -1032,7 +1069,7 @@
 }
 .fac-admin-table th {
   text-align: left;
-  padding: 0.65rem 0.85rem;
+  padding: 0.85rem 1.1rem;
   background: var(--bg-alt);
   color: var(--text-muted);
   font-size: 0.72rem;
@@ -1043,10 +1080,12 @@
   white-space: nowrap;
 }
 .fac-admin-table td {
-  padding: 0.75rem 0.85rem;
+  padding: 0.9rem 1.1rem;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
+  line-height: 1.4;
 }
+.fac-admin-table tbody tr:last-child td { border-bottom: none; }
 .fac-admin-table tbody tr:hover { background: var(--bg-alt); }
 .fac-table-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
 
@@ -1084,31 +1123,41 @@
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.5rem;
+  padding: 1.75rem 2rem;
   margin-bottom: 1.25rem;
 }
 .fac-detail-card-title {
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--text-muted);
-  margin: 0 0 1rem;
-  padding-bottom: 0.5rem;
+  margin: 0 0 1.1rem;
+  padding-bottom: 0.65rem;
   border-bottom: 1px solid var(--border);
 }
-.fac-detail-rows { display: flex; flex-direction: column; gap: 0.6rem; }
-.fac-detail-row { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.875rem; }
-.fac-detail-row span:first-child { color: var(--text-muted); min-width: 100px; }
+.fac-detail-rows { display: flex; flex-direction: column; gap: 0.75rem; }
+.fac-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  font-size: 0.875rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.fac-detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+.fac-detail-row span:first-child { color: var(--text-muted); min-width: 110px; flex-shrink: 0; }
+.fac-detail-row span:last-child, .fac-detail-row strong, .fac-detail-row a { text-align: right; }
 
-.fac-detail-booking-grid { display: grid; grid-template-columns: 1fr 360px; gap: 1.5rem; align-items: start; }
+.fac-detail-booking-grid { display: grid; grid-template-columns: 1fr 380px; gap: 2rem; align-items: start; }
 .fac-detail-booking-main {}
 .fac-detail-booking-side {}
 
 /* ── Admin: Schedules ────────────────────────────────────────── */
 
-.fac-sched-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; margin-top: 1.25rem; }
-.fac-sched-section { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
+.fac-sched-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; margin-top: 1.5rem; }
+.fac-sched-section { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1.75rem 2rem; }
 .fac-sched-title { font-size: 1rem; font-weight: 700; margin: 0 0 0.4rem; }
 .fac-sched-hint { font-size: 0.82rem; color: var(--text-muted); margin: 0 0 1.25rem; }
 
@@ -1138,7 +1187,7 @@
 
 /* ── Admin: Payment Settings ─────────────────────────────────── */
 
-.fac-payment-settings { max-width: 660px; }
+.fac-payment-settings { max-width: 760px; }
 .fac-provider-cards { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 0.5rem; }
 .fac-provider-card {
   display: flex;
@@ -1178,6 +1227,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .fac-bar-chart { display: flex; flex-direction: column; gap: 0.65rem; }
@@ -1189,6 +1239,10 @@
 
 /* ── Responsive ──────────────────────────────────────────────── */
 
+@media (max-width: 1100px) {
+  .fac-hub-stats { grid-template-columns: repeat(3, 1fr); }
+}
+
 @media (max-width: 900px) {
   .fac-browse-body { grid-template-columns: 1fr; }
   .fac-filters { position: static; }
@@ -1196,8 +1250,17 @@
   .fac-booking-panel { position: static; }
   .fac-detail-booking-grid { grid-template-columns: 1fr; }
   .fac-hub-grid { grid-template-columns: 1fr; }
+  .fac-hub-stats { grid-template-columns: repeat(3, 1fr); }
   .fac-sched-layout { grid-template-columns: 1fr; }
   .fac-analytics-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .fac-hub-stats { grid-template-columns: repeat(2, 1fr); }
+  .admin-content { width: calc(100% - 2rem); }
+  .fac-admin-form-wrap { padding: 1.25rem 1rem; }
+  .fac-detail-card { padding: 1.25rem; }
+  .fac-sched-section { padding: 1.25rem; }
 }
 
 @media (max-width: 620px) {
