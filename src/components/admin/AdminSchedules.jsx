@@ -122,7 +122,7 @@ export default function AdminSchedules() {
 
               <div className="fac-sched-list">
                 {DAYS_OF_WEEK.map((day, idx) => {
-                  const daySched = schedules.filter((s) => s.day_of_week === idx);
+                  const daySched = schedules.filter((s) => Number(s.day_of_week) === idx);
                   return (
                     <div key={idx} className="fac-sched-day-row">
                       <span className="fac-sched-day-name">{day}</span>
@@ -151,7 +151,7 @@ export default function AdminSchedules() {
                 <div className="fac-form-grid fac-form-grid-3">
                   <div className="fac-form-group">
                     <label className="fac-form-label">Day</label>
-                    <select className="fac-input" value={newSched.day_of_week} onChange={(e) => setNewSched((s) => ({ ...s, day_of_week: e.target.value }))}>
+                    <select className="fac-input" value={newSched.day_of_week} onChange={(e) => setNewSched((s) => ({ ...s, day_of_week: parseInt(e.target.value) }))}>
                       {DAYS_OF_WEEK.map((d, i) => <option key={i} value={i}>{d}</option>)}
                     </select>
                   </div>
