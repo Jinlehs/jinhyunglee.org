@@ -39,3 +39,4 @@ jobs:
         run: |
           echo "${{ secrets.STRIPE_SECRET_KEY }}" | npx wrangler secret put STRIPE_SECRET_KEY
           echo "${{ secrets.SQUARE_ACCESS_TOKEN }}" | npx wrangler secret put SQUARE_ACCESS_TOKEN
+          echo "${{ secrets.FINNHUB_API_KEY }}" | npx wrangler secret put FINNHUB_API_KEY
