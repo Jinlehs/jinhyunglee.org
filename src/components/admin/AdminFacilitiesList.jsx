@@ -125,12 +125,13 @@ export default function AdminFacilitiesList() {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
+    setEditData(null);
     if (!isNew && !isEdit) {
       let q = supabase.from("facilities").select("*, locations(name)").order("name");
       if (filterLocation) q = q.eq("location_id", filterLocation);
       q.then(({ data }) => { setFacilities(data || []); setLoading(false); });
-    }
-    if (isEdit) {
+    } else if (isEdit) {
       supabase.from("facilities").select("*").eq("id", facilityId).single()
         .then(({ data }) => { setEditData(data); setLoading(false); });
     } else {

@@ -64,26 +64,32 @@ export function applyPromoCode(promoCode, subtotal) {
   return Math.min(promoCode.discount_value, subtotal);
 }
 
+// Normalize a Supabase time string to "HH:MM" (strips any seconds)
+function normalizeTime(t) {
+  return t ? t.substring(0, 5) : t;
+}
+
 // Check if two time ranges overlap
 function rangesOverlap(aStart, aEnd, bStart, bEnd) {
   return aStart < bEnd && aEnd > bStart;
 }
 
 // Get the schedule entry for a given day-of-week (0=Sun)
+// Coerce day_of_week to Number to handle Supabase returning it as string
 export function getScheduleForDay(schedules, dayOfWeek) {
-  return schedules.find((s) => s.day_of_week === dayOfWeek && s.active) || null;
+  return schedules.find((s) => Number(s.day_of_week) === dayOfWeek && s.active) || null;
 }
 
 // Build a local datetime string from a date string + time string
 export function buildLocalDT(dateStr, timeStr) {
-  return new Date(`${dateStr}T${timeStr}:00`);
+  return new Date(`${dateStr}T${normalizeTime(timeStr)}:00`);
 }
 
 // Generate 30-minute time slots within open/close window
 export function generateSlots(openTime, closeTime) {
   const slots = [];
-  const [oh, om] = openTime.split(":").map(Number);
-  const [ch, cm] = closeTime.split(":").map(Number);
+  const [oh, om] = normalizeTime(openTime).split(":").map(Number);
+  const [ch, cm] = normalizeTime(closeTime).split(":").map(Number);
   let h = oh;
   let m = om;
   while (h * 60 + m + 30 <= ch * 60 + cm) {
@@ -102,8 +108,9 @@ export function isDateAvailable(dateStr, schedules, bookings, blocks) {
   const schedule = getScheduleForDay(schedules, dow);
   if (!schedule) return false;
 
-  const dayStart = new Date(dateStr + "T" + schedule.open_time + ":00");
-  const dayEnd = new Date(dateStr + "T" + schedule.close_time + ":00");
+  // Normalize time strings — Supabase returns "HH:MM:SS", we need "HH:MM"
+  const dayStart = new Date(`${dateStr}T${normalizeTime(schedule.open_time)}:00`);
+  const dayEnd = new Date(`${dateStr}T${normalizeTime(schedule.close_time)}:00`);
 
   // Check if the entire schedule window is blocked
   const allBlocked = [...bookings, ...blocks].some((b) => {
