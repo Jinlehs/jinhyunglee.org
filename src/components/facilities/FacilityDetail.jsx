@@ -21,14 +21,16 @@ function Calendar({ year, month, onSelectDate, selectedDate, disabledDates, avai
   const isAvailable = (d) => {
     if (!d) return false;
     const str = `${year}-${pad(month + 1)}-${pad(d)}`;
-    const dt = new Date(str);
+    // Use "T00:00:00" (no timezone) so JS treats it as local time — avoids UTC
+    // shift that makes today appear in the past for UTC-negative timezones
+    const dt = new Date(str + "T00:00:00");
     if (dt < today) return false;
     return availableDates.has(str);
   };
   const isDisabled = (d) => {
     if (!d) return true;
     const str = `${year}-${pad(month + 1)}-${pad(d)}`;
-    const dt = new Date(str);
+    const dt = new Date(str + "T00:00:00");
     if (dt < today) return true;
     return disabledDates.has(str);
   };
