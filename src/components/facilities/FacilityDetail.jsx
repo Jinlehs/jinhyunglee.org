@@ -74,6 +74,8 @@ export default function FacilityDetail() {
   const [blocks, setBlocks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
   const today = new Date();
   const [calYear, setCalYear] = useState(today.getFullYear());
   const [calMonth, setCalMonth] = useState(today.getMonth());
