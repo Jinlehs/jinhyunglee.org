@@ -272,95 +272,126 @@ export default function FacilityDetail() {
         {/* Booking Panel */}
         <aside className="fac-booking-panel">
           <div className="fac-booking-card">
-            <h3 className="fac-booking-card-title">Check Availability</h3>
+            <h3 className="fac-booking-card-title">Book This Space</h3>
 
-            <div className="fac-cal-nav">
-              <button className="fac-cal-nav-btn" onClick={prevMonth}>‹</button>
-              <span className="fac-cal-nav-label">{MONTH_NAMES[calMonth]} {calYear}</span>
-              <button className="fac-cal-nav-btn" onClick={nextMonth}>›</button>
-            </div>
+            {schedules.length === 0 ? (
+              /* No schedule configured — show contact form */
+              <div className="fac-no-schedule-notice">
+                <p className="fac-no-schedule-msg">
+                  Online availability isn't set up for this facility yet. Use the form below to request a booking and we'll get back to you.
+                </p>
+                <a
+                  href={`mailto:${facility.locations?.email || "facilities@springfield.k12.il.us"}?subject=Booking Request: ${encodeURIComponent(facility.name)}&body=Hi,%0A%0AI'd like to book ${encodeURIComponent(facility.name)}.%0A%0APreferred date:%0APreferred time:%0AEvent type:%0ANumber of attendees:%0A%0AThanks`}
+                  className="fac-btn-primary fac-btn-full"
+                >
+                  Request a Booking via Email
+                </a>
+              </div>
+            ) : (
+              <>
+                <p className="fac-booking-hint">
+                  Select a <strong>green date</strong>, then choose your start and end times below.
+                </p>
 
-            <Calendar
-              year={calYear}
-              month={calMonth}
-              selectedDate={selectedDate}
-              availableDates={availableDates}
-              disabledDates={disabledDates}
-              onSelectDate={(d) => {
-                setSelectedDate(d);
-                setSelectedStart(null);
-                setSelectedEnd(null);
-              }}
-            />
-
-            {selectedDate && daySlots.length > 0 && (
-              <div className="fac-slot-section">
-                <label className="fac-filter-label">Start Time</label>
-                <div className="fac-slot-grid">
-                  {daySlots.map((slot) => (
-                    <button
-                      key={slot}
-                      className={`fac-slot-btn${selectedStart === slot ? " selected" : ""}${isStartDisabled(slot) ? " disabled" : ""}`}
-                      disabled={isStartDisabled(slot)}
-                      onClick={() => { setSelectedStart(slot); setSelectedEnd(null); }}
-                    >
-                      {formatTime(slot)}
-                    </button>
-                  ))}
+                <div className="fac-cal-nav">
+                  <button className="fac-cal-nav-btn" onClick={prevMonth}>‹</button>
+                  <span className="fac-cal-nav-label">{MONTH_NAMES[calMonth]} {calYear}</span>
+                  <button className="fac-cal-nav-btn" onClick={nextMonth}>›</button>
                 </div>
 
-                {selectedStart && (
-                  <>
-                    <label className="fac-filter-label" style={{ marginTop: "1rem" }}>End Time</label>
+                <Calendar
+                  year={calYear}
+                  month={calMonth}
+                  selectedDate={selectedDate}
+                  availableDates={availableDates}
+                  disabledDates={disabledDates}
+                  onSelectDate={(d) => {
+                    setSelectedDate(d);
+                    setSelectedStart(null);
+                    setSelectedEnd(null);
+                  }}
+                />
+
+                {!selectedDate && availableDates.size === 0 && (
+                  <div className="fac-no-avail-notice">
+                    No available dates in the next {facility.advance_booking_days || 90} days. Contact us directly to arrange a booking.
+                  </div>
+                )}
+
+                {selectedDate && daySlots.length > 0 && (
+                  <div className="fac-slot-section">
+                    <label className="fac-filter-label">Start Time</label>
                     <div className="fac-slot-grid">
-                      {daySlots.filter((s) => {
-                        const sdt = buildLocalDT(selectedDate, s);
-                        const startDT = buildLocalDT(selectedDate, selectedStart);
-                        return sdt > startDT;
-                      }).map((slot) => (
+                      {daySlots.map((slot) => (
                         <button
                           key={slot}
-                          className={`fac-slot-btn${selectedEnd === slot ? " selected" : ""}${isEndDisabled(slot) ? " disabled" : ""}`}
-                          disabled={isEndDisabled(slot)}
-                          onClick={() => setSelectedEnd(slot)}
+                          className={`fac-slot-btn${selectedStart === slot ? " selected" : ""}${isStartDisabled(slot) ? " disabled" : ""}`}
+                          disabled={isStartDisabled(slot)}
+                          onClick={() => { setSelectedStart(slot); setSelectedEnd(null); }}
                         >
                           {formatTime(slot)}
                         </button>
                       ))}
                     </div>
-                  </>
-                )}
-              </div>
-            )}
 
-            {selectedDate && selectedStart && selectedEnd && (
-              <div className="fac-booking-summary">
-                <div className="fac-booking-sum-row">
-                  <span>Date</span>
-                  <span>{new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</span>
-                </div>
-                <div className="fac-booking-sum-row">
-                  <span>Time</span>
-                  <span>{formatTime(selectedStart)} – {formatTime(selectedEnd)}</span>
-                </div>
-                {priceEstimate !== null && (
-                  <div className="fac-booking-sum-row fac-booking-sum-price">
-                    <span>Estimated Total</span>
-                    <span>{formatCurrency(priceEstimate)}</span>
+                    {selectedStart && (
+                      <>
+                        <label className="fac-filter-label" style={{ marginTop: "1rem" }}>End Time</label>
+                        <p className="fac-slot-hint">Min {facility.min_booking_hours}h · Max {facility.max_booking_hours}h</p>
+                        <div className="fac-slot-grid">
+                          {daySlots.filter((s) => {
+                            const sdt = buildLocalDT(selectedDate, s);
+                            const startDT = buildLocalDT(selectedDate, selectedStart);
+                            return sdt > startDT;
+                          }).map((slot) => (
+                            <button
+                              key={slot}
+                              className={`fac-slot-btn${selectedEnd === slot ? " selected" : ""}${isEndDisabled(slot) ? " disabled" : ""}`}
+                              disabled={isEndDisabled(slot)}
+                              onClick={() => setSelectedEnd(slot)}
+                            >
+                              {formatTime(slot)}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
-                <button className="fac-btn-primary fac-btn-full" onClick={handleBook}>
-                  Reserve This Time →
-                </button>
-              </div>
-            )}
 
-            {selectedDate && daySlots.length === 0 && (
-              <p className="fac-no-slots">No available slots on this date.</p>
+                {selectedDate && selectedStart && selectedEnd && (
+                  <div className="fac-booking-summary">
+                    <div className="fac-booking-sum-row">
+                      <span>Date</span>
+                      <span>{new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</span>
+                    </div>
+                    <div className="fac-booking-sum-row">
+                      <span>Time</span>
+                      <span>{formatTime(selectedStart)} – {formatTime(selectedEnd)}</span>
+                    </div>
+                    {priceEstimate !== null && (
+                      <div className="fac-booking-sum-row fac-booking-sum-price">
+                        <span>Estimated Total</span>
+                        <span>{formatCurrency(priceEstimate)}</span>
+                      </div>
+                    )}
+                    <button className="fac-btn-primary fac-btn-full" onClick={handleBook}>
+                      Reserve This Time →
+                    </button>
+                  </div>
+                )}
+
+                {selectedDate && daySlots.length === 0 && (
+                  <p className="fac-no-slots">No available slots on this date.</p>
+                )}
+              </>
             )}
 
             <div className="fac-booking-capacity">
-              <span>👥 Capacity: up to {facility.capacity.toLocaleString()} guests</span>
+              <span>👥 Up to {facility.capacity.toLocaleString()} guests</span>
+              {facility.locations?.phone && (
+                <span>📞 <a href={`tel:${facility.locations.phone}`}>{facility.locations.phone}</a></span>
+              )}
             </div>
           </div>
         </aside>
